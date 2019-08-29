@@ -37,8 +37,8 @@ a {
 
 .navbar-right-container {
   display: none;
-  /*justify-content: flex-start;*/
-  /*align-items: center;*/
+  justify-content: flex-start;
+  align-items: center;
 }
 .navbar-menu-container {
   display: flex;
