@@ -10,7 +10,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const portfinder = require('portfinder')
 
-const goodsData = require("./../mock/goods.json")
+// const goodsData = require("./../mock/goods.json")
 
 
 const HOST = process.env.HOST
@@ -25,11 +25,11 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   
   // these devServer options should be customized in /config/index.js
   devServer: {
-    before(app) {
-      app.get('/goods', function (req, res) {
-        res.json(goodsData)
-      })
-    },
+    // before(app) {
+    //   app.get('/goods', function (req, res) {
+    //     res.json(goodsData)
+    //   })
+    // },
     
     clientLogLevel: 'warning',
     historyApiFallback: {

@@ -20,50 +20,50 @@ router.get('/', (req, res, next) => {
   //     {
   //       "productId":"10001",
   //       "productName":"小米6",
-  //       "productPrice":"2499",
-  //       "productImg":"mi6.jpg"
+  //       "salePrice":"2499",
+  //       "productImage":"mi6.jpg"
   //     },
   //     {
   //       "productId":"10002",
   //       "productName":"小米笔记本",
-  //       "productPrice":"3999",
-  //       "productImg":"note.jpg"
+  //       "salePrice":"3999",
+  //       "productImage":"note.jpg"
   //     },
   //     {
   //       "productId":"10003",
   //       "productName":"小米6",
-  //       "productPrice":"2499",
-  //       "productImg":"mi6.jpg"
+  //       "salePrice":"2499",
+  //       "productImage":"mi6.jpg"
   //     },
   //     {
   //       "productId":"10004",
   //       "productName":"小米6",
-  //       "productPrice":"2499",
-  //       "productImg":"1.jpg"
+  //       "salePrice":"2499",
+  //       "productImage":"1.jpg"
   //     },
   //     {
   //       "productId":"10005",
   //       "productName":"小米6",
-  //       "productPrice":"2499",
-  //       "productImg":"2.jpg"
+  //       "salePrice":"2499",
+  //       "productImage":"2.jpg"
   //     },
   //     {
   //       "productId":"10006",
   //       "productName":"小米6",
-  //       "productPrice":"2499",
-  //       "productImg":"3.jpg"
+  //       "salePrice":"2499",
+  //       "productImage":"3.jpg"
   //     },
   //     {
   //       "productId":"10007",
   //       "productName":"小米6",
-  //       "productPrice":"2499",
-  //       "productImg":"4.jpg"
+  //       "salePrice":"2499",
+  //       "productImage":"4.jpg"
   //     },
   //     {
   //       "productId":"10008",
   //       "productName":"小米6",
-  //       "productPrice":"2499",
-  //       "productImg":"5.jpg"
+  //       "salePrice":"2499",
+  //       "productImage":"5.jpg"
   //     }],(err,doc)=>{
   //     if(err){
   //       console.log(err);
@@ -73,12 +73,11 @@ router.get('/', (req, res, next) => {
   //   })
   // res.send('hell')
   
-  
-  
   Goods.find({}, (err, doc) => {
       if (err) {
         res.json({
-          status: '1'
+          status: '1',
+          msg:msg.message
         })
       } else {
         // res.send(doc)
@@ -93,9 +92,6 @@ router.get('/', (req, res, next) => {
         })
       }
     })
-  
-  
-  
 })
 
 module.exports = router
