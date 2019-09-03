@@ -11,7 +11,7 @@
         <div class="filter-nav">
           <span class="sortby">Sort by:</span>
           <a href="javascript:void(0)" class="default cur">Default</a>
-          <a href="javascript:void(0)" class="price">Price <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
+          <a href="javascript:void(0)" class="price" @click="sortGoods()">Price <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
           <a href="javascript:void(0)" class="filterby stopPop">Filter by</a>
         </div>
         <div class="accessory-result">
@@ -72,7 +72,10 @@
   export default {
     data() {
       return {
-        goodsList:[]
+        goodsList:[],
+        sortFlag:true,
+        page:1,
+        sort:1
       }
     },
 
@@ -97,14 +100,31 @@
         //   console.log(result);
         // })
 
+        var param = {
+          page:this.page,
+          pageSize:this.pageSize,
+          sort:this.sortFlag?1:-1
+        }
         //在config/index.js中设置完之后直接使用这个，并且把之前配置的前端接口注释掉
-        axios.get("/goods").then((result)=>{
-          console.log(result);
-          let data = result.data
-          console.log(data);
-          this.goodsList = data.result
+        axios.get("/goods",{
+          params:param
+        }).then((res)=>{
+          console.log(res);
+          res = res.data
+          console.log(res);
+          if(res.status=='0'){
+            this.goodsList = res.result
+          }else{
+            this.goodsList = []
+          }
         })
       },
+
+      sortGoods(){
+        this.sortFlag = !this.sortFlag;
+        this.page = 1;
+        this.getGoodsList()
+      }
 
 
 
