@@ -137,8 +137,12 @@ router.get('/', (req, res, next) => {
   // var priceGt = '',priceLte = '';
   let params = {};
   
-  let goodsModel = Goods.find(params).skip(skip).limit(pageSize).sort({'salePrice':sort});
-  // goodsModel.sort({'salePrice':sort});
+  let goodsModel = Goods.find(params).skip(skip).limit(pageSize);
+  
+  if(sort){
+    goodsModel.sort({'salePrice':sort});
+  }
+  
   goodsModel.exec(function (err,doc) {
     if(err){
       res.json({

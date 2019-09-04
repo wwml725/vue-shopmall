@@ -11,7 +11,11 @@
         <div class="filter-nav">
           <span class="sortby">Sort by:</span>
           <a href="javascript:void(0)" class="default cur">Default</a>
-          <a href="javascript:void(0)" class="price" @click="sortGoods()">Price <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
+          <a href="javascript:void(0)" class="price" @click="sortGoods()">Price
+            <svg class="icon icon-arrow-short">
+              <use xlink:href="#icon-arrow-short"></use>
+            </svg>
+          </a>
           <a href="javascript:void(0)" class="filterby stopPop">Filter by</a>
         </div>
         <div class="accessory-result">
@@ -39,7 +43,7 @@
           <div class="accessory-list-wrap">
             <div class="accessory-list col-4">
               <ul>
-                <li v-for="(item,index) in goodsList.list">
+                <li v-for="(item,index) in goodsList">
                   <div class="pic">
                     <a href="#"><img v-lazy="'/static/'+item.productImage" alt="1"></a>
                   </div>
@@ -53,6 +57,9 @@
                   </div>
                 </li>
               </ul>
+              <div v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="30" class="load-more">
+                <img src="./../assets/loading-spinning-bubbles.svg" v-show="loading">
+              </div>
             </div>
           </div>
         </div>
@@ -69,25 +76,29 @@
   import NavFooter from "components/NavFooter"
   import NavBread from "components/NavBread"
   import axios from 'axios'
+
   export default {
     data() {
       return {
-        goodsList:[],
-        sortFlag:true,
-        page:1,
-        sort:1
+        goodsList: [],
+        sortFlag: true,
+        page: 1,
+        pageSize:8,
+        sort: null,
+        busy: true,
+        loading:false,
       }
     },
 
-    mounted(){
+    mounted() {
       this.getGoodsList()
     },
 
     methods: {
-      jump(){
+      jump() {
         this.$router.push('/cart')
       },
-      getGoodsList(){
+      getGoodsList(flag) {
         //这里是通过vue-cli设置后台代理接口获取的数据，我们应该前后端分离，之后会从后台数据库中获取数据
         // axios.get("/goods").then((result)=>{
         //   console.log(result);
@@ -101,38 +112,61 @@
         // })
 
         var param = {
-          page:this.page,
-          pageSize:this.pageSize,
-          sort:this.sortFlag?1:-1
+          page: this.page,
+          pageSize: this.pageSize,
+          sort: this.sortFlag ? 1 : -1
         }
+        this.loading = true;
         //在config/index.js中设置完之后直接使用这个，并且把之前配置的前端接口注释掉
-        axios.get("/goods",{
-          params:param
-        }).then((res)=>{
-          console.log(res);
-          res = res.data
-          console.log(res);
-          if(res.status=='0'){
-            this.goodsList = res.result
-          }else{
-            this.goodsList = []
-          }
-        })
+          axios.get("/goods", {
+            params: param
+          }).then((res) => {
+            res = res.data
+            this.loading = true;
+            if (res.status == '0') {
+              if(flag){
+                this.goodsList = this.goodsList.concat(res.result.list)
+
+                if(res.result.count==0){
+                  this.busy = true
+                }else{
+                  this.busy=false
+                }
+              }else{
+                this.goodsList = res.result.list
+                this.busy=false
+              }
+            } else {
+              this.goodsList = []
+            }
+          })
       },
 
-      sortGoods(){
+      sortGoods() {
         this.sortFlag = !this.sortFlag;
         this.page = 1;
         this.getGoodsList()
+      },
+      loadMore() {
+        this.busy = true
+        setTimeout(() => {
+          this.page++
+          this.getGoodsList(true)
+        }, 1500);
       }
 
 
-
     },
-    components:{
+    components: {
       NavHeader,
       NavFooter,
       NavBread
     }
   }
 </script>
+<style>
+  .load-more{
+    width: 100%;
+    text-align: center;
+  }
+</style>

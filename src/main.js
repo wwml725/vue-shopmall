@@ -16,7 +16,14 @@ Vue.use(VueLazyload, {
   attempt: 1///???????
 })
 
+import infiniteScroll from 'vue-infinite-scroll'
+Vue.use(infiniteScroll)
+
+
 Vue.config.productionTip = false
+import './assets/css/base.css'
+import './assets/css/checkout.css'
+import './assets/css/product.css'
 
 /* eslint-disable no-new */
 new Vue({
