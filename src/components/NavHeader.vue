@@ -21,7 +21,7 @@
           <!--<a href="/" class="navbar-link">我的账户</a>-->
           <span class="navbar-link" v-if="nickName"></span>
           <a href="javascript:void(0)" class="navbar-link" @click="loginModalFlag=true" v-if="!nickName">Login</a>
-          <a href="javascript:void(0)" class="navbar-link" @click="loginModalFlag=true" v-if="nickName">Logout</a>
+          <a href="javascript:void(0)" class="navbar-link" v-if="nickName" @click="logOut">Logout</a>
           <div class="navbar-cart-container">
             <span class="navbar-cart-count"></span>
             <a class="navbar-link navbar-cart-link" href="/#/cart">
@@ -43,6 +43,7 @@
           <div class="confirm-tips">
             <div class="error-wrap" v-show="errorTip">
               <span class="error error-show" v-show="errorTip">用户名或者密码错误</span>
+              {{errInfo}}
             </div>
             <ul>
               <li class="regi_form_input">
@@ -157,6 +158,7 @@
         userName:'',
         userPwd:'',
         errorTip:false,
+        errInfo:'',
         loginModalFlag:false,
         nickName:''
 
@@ -169,6 +171,8 @@
     methods: {
       login(){
         console.log(11);
+        //如果不填数据，就不会调用接口，只有填了之后才会调取接口，调取接口之后，将数据传送给后台，后台需要进行验证，根据不同的要求返回不同的内容（后端设置），提问：如果用户名先写正确，密码输入错误，如何返回密码错误或者密码和用户不匹配。
+        //后台可以先验证用户是否存在，如果存在在验证用户和密码（感觉多谢了好多代码）(T＿T)(T＿T)
         if(!this.userName || !this.userPwd){
           this.errorTip = true;
           return;
@@ -185,9 +189,21 @@
             console.log(res.result.userName);
           }else{
             this.errorTip = true
+            this.errInfo = res.msg
           }
         })
-      }
+      },
+
+      logOut(){
+        axios.post("/users/logout").then((response)=>{
+          let res = response.data;
+          if(res.status=="0"){
+                       this.nickName = '';
+//             this.$store.commit("updateUserInfo",res.result.userName);
+          }
+        })
+      },
+
 
     }
   }

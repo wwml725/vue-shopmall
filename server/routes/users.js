@@ -12,18 +12,24 @@ router.get('/test', function(req, res, next) {
   res.send('test');
 });
 
+
+//【登录功能】：实际就是将输入的数据，和数据库中的数据进行比对，如果一样就是登陆上了，并且将这些信息保存在cookie中，用来验证用户是否登录，一般情况下将数据保存在cookie中以后，刷新页面就会是页面保持在没有登陆的状态，因此每一次刷新页面，都会先获取cookie中的数据，与数据库中进行对比，如果对比成功，就保持在登录状态
 router.post("/login", function (req,res,next) {
+  //查找条件
   var param = {
-    userName:req.body.userName,
+    userName:req.body.userName,//req.body是前端post提交过来的数据
     userPwd:req.body.userPwd
-  }
+  };
   User.findOne(param, function (err,doc) {
     if(err){
       res.json({
         status:"1",
-        msg:err.message
+        msg:err.message,
       });
+  
+      console.log(err);
     }else{
+      console.log(doc);//如果没有找到就是null
       if(doc){
         res.cookie("userId",doc.userId,{
           path:'/',
@@ -41,25 +47,31 @@ router.post("/login", function (req,res,next) {
             userName:doc.userName
           }
         });
+      }else{
+        res.json({
+          msg:'用户名或者密码错误!!!!!!!server'
+        })
       }
     }
   });
 });
 
 
-// //登出接口
-// router.post("/logout", function (req,res,next) {
-//   res.cookie("userId","",{
-//     path:"/",
-//     maxAge:-1
-//   });
-//   res.json({
-//     status:"0",
-//     msg:'',
-//     result:''
-//   })
-// });
+// //登出接口   就是清除cookie记录
+router.post("/logout", function (req,res,next) {
+  res.cookie("userId","",{
+    path:"/",
+    maxAge:-1
+  });
+  res.json({
+    status:"0",
+    msg:'',
+    result:''
+  })
+});
 //
+
+//登录验证
 // router.get("/checkLogin", function (req,res,next) {
 //   if(req.cookies.userId){
 //     res.json({
@@ -75,6 +87,8 @@ router.post("/login", function (req,res,next) {
 //     });
 //   }
 // });
+
+
 // router.get("/getCartCount", function (req,res,next) {
 //   if(req.cookies && req.cookies.userId){
 //     console.log("userId:"+req.cookies.userId);
