@@ -23,18 +23,9 @@
           <div class="filter stopPop" id="filter">
             <dl class="filter-price">
               <dt>Price:</dt>
-              <dd><a href="javascript:void(0)">All</a></dd>
-              <dd>
-                <a href="javascript:void(0)">0 - 100</a>
-              </dd>
-              <dd>
-                <a href="javascript:void(0)">100 - 500</a>
-              </dd>
-              <dd>
-                <a href="javascript:void(0)">500 - 1000</a>
-              </dd>
-              <dd>
-                <a href="javascript:void(0)">1000 - 2000</a>
+              <dd><a href="javascript:void(0)" @click="setPriceFilter('all')" v-bind:class="{'cur':priceChecked=='all'}">All</a></dd>
+              <dd v-for="(item,index) in priceFilter">
+                <a href="javascript:void(0)" @click="setPriceFilter(index)" v-bind:class="{'cur':priceChecked==index}">{{item.startPrice}} - {{item.endPrice}}</a>
               </dd>
             </dl>
           </div>
@@ -87,6 +78,27 @@
         sort: null,
         busy: true,
         loading:false,
+        priceChecked:'all',
+        priceFilter:[
+          {
+            startPrice:'0.00',
+            endPrice:'100.00'
+          },
+          {
+            startPrice:'100.00',
+            endPrice:'500.00'
+          },
+          {
+            startPrice:'500.00',
+            endPrice:'1000.00'
+          },
+          {
+            startPrice:'1000.00',
+            endPrice:'5000.00'
+          }
+        ],
+
+
       }
     },
 
@@ -114,7 +126,9 @@
         var param = {
           page: this.page,
           pageSize: this.pageSize,
-          sort: this.sortFlag ? 1 : -1
+          sort: this.sortFlag ? 1 : -1,
+          priceLevel:this.priceChecked
+
         }
         this.loading = true;
         //在config/index.js中设置完之后直接使用这个，并且把之前配置的前端接口注释掉
@@ -153,7 +167,13 @@
           this.page++
           this.getGoodsList(true)
         }, 1500);
-      }
+      },
+
+      setPriceFilter(index){
+        this.priceChecked = index;
+        this.page = 1;
+        this.getGoodsList();
+      },
 
 
     },
