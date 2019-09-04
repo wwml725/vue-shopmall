@@ -10,10 +10,15 @@
       <div class="container">
         <div class="filter-nav">
           <span class="sortby">Sort by:</span>
-          <a href="javascript:void(0)" class="default cur">Default</a>
-          <a href="javascript:void(0)" class="price" @click="sortGoods()">Price
-            <svg class="icon icon-arrow-short">
-              <use xlink:href="#icon-arrow-short"></use>
+          <a href="javascript:void(0)" class="default cur" >Default</a>
+          <a href="javascript:void(0)"
+             class="price"
+             v-bind:class="{'sort-up':sortFlag}"
+             @click="sortGoods()">Price
+            <svg class="icon icon-arrow-short" width="200px" height="200.00px" viewBox="0 0 1024 1024" version="1.1"
+                 xmlns="http://www.w3.org/2000/svg">
+              <path fill="#333333"
+                    d="M525.339326 186.172452L801.789086 462.622212c12.496698 12.496698 32.758136 12.496698 45.254834 0 12.497405-12.497405 12.496698-32.758136 0-45.254834l-331.014362-331.014362c-12.496698-12.496698-32.757429-12.497405-45.254834 0l-341.795619 339.143969c-12.496698 12.496698-12.496698 32.758136 0 45.254834 12.496698 12.496698 32.758136 12.496698 45.254834 0l287.10586-284.454209L461.372325 925.726242c0 17.673427 14.32669 32.000117 32.000118 32.000117 17.67272-0.000707 31.99941-14.327398 32.000117-32.000117l-0.032527-739.553083z"/>
             </svg>
           </a>
           <a href="javascript:void(0)" class="filterby stopPop">Filter by</a>
@@ -34,7 +39,7 @@
           <div class="accessory-list-wrap">
             <div class="accessory-list col-4">
               <ul>
-                <li v-for="(item,index) in goodsList">
+                <li v-for="(item,index) in goodsList" :key="index">
                   <div class="pic">
                     <a href="#"><img v-lazy="'/static/'+item.productImage" alt="1"></a>
                   </div>
@@ -42,7 +47,7 @@
                     <div class="name">{{item.productName}}</div>
                     <div class="price">{{item.salePrice}}</div>
 
-                    <div class="btn-area">
+                    <div class="btn-area" @click="addCart(item.productId)">
                       <a href="javascript:;" class="btn btn--m">加入购物车</a>
                     </div>
                   </div>
@@ -136,7 +141,7 @@
             params: param
           }).then((res) => {
             res = res.data
-            this.loading = true;
+            this.loading = false;
             if (res.status == '0') {
               if(flag){
                 this.goodsList = this.goodsList.concat(res.result.list)
@@ -174,6 +179,22 @@
         this.page = 1;
         this.getGoodsList();
       },
+
+      addCart(productId){
+        console.log(productId);
+
+        axios.post('/goods/addCart',{
+          productId:productId
+        }).then((res)=>{
+          console.log(res);
+          res = res.data
+          if(res.status==0){
+            alert('添加成功')
+          }else{
+            alert('msg:'+res.msg)
+          }
+        })
+      }
 
 
     },

@@ -427,6 +427,7 @@
   -webkit-transform: rotate(180deg);
   -ms-transform: rotate(180deg);
   transform: rotate(180deg);
+
 }
 
 .filter-nav .filterby {
@@ -479,6 +480,7 @@
   width: 11px;
   height: 11px;
 }
+
 
 .page-title-accessory {
   display: none;
