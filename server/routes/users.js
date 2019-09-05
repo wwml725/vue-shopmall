@@ -14,6 +14,7 @@ router.get('/test', function(req, res, next) {
 
 
 //【登录功能】：实际就是将输入的数据，和数据库中的数据进行比对，如果一样就是登陆上了，并且将这些信息保存在cookie中，用来验证用户是否登录，一般情况下将数据保存在cookie中以后，刷新页面就会是页面保持在没有登陆的状态，因此每一次刷新页面，都会先获取cookie中的数据，与数据库中进行对比，如果对比成功，就保持在登录状态
+//localhost:3000/users/login
 router.post("/login", function (req,res,next) {
   //查找条件
   var param = {
@@ -57,7 +58,8 @@ router.post("/login", function (req,res,next) {
 });
 
 
-// //登出接口   就是清除cookie记录
+//登出接口   就是清除cookie记录
+//localhost:3000/users/logout
 router.post("/logout", function (req,res,next) {
   res.cookie("userId","",{
     path:"/",
@@ -69,10 +71,11 @@ router.post("/logout", function (req,res,next) {
     result:''
   })
 });
-//
+
 
 //登录验证 通过id验证是否登录
 //如果cookie中保存了id，就代表登陆了，并且返回登录的用户名（这样做貌似不太好吧？？）
+//页面中登录和不登录显示的内容是不一样的
 router.get("/checkLogin", function (req,res,next) {
   if(req.cookies.userId){
     res.json({
@@ -88,6 +91,31 @@ router.get("/checkLogin", function (req,res,next) {
     });
   }
 });
+
+//获取购物车列表数据
+router.get('/cartList',(req,res,next)=>{
+  let userId= req.cookies.userId;
+  User.findOne({userId:userId},(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message,
+        result:''
+      })
+    }else{
+      if(doc){
+          res.json({
+            status:'0',
+            msg:'',
+            result:doc.cartList
+          })
+      }
+    }
+  })
+  
+})
+
+
 
 
 // router.get("/getCartCount", function (req,res,next) {

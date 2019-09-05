@@ -1,7 +1,5 @@
 <template>
   <div>
-
-
     <nav-header></nav-header>
     <nav-bread>
       <span>Goods</span>
@@ -10,7 +8,7 @@
       <div class="container">
         <div class="filter-nav">
           <span class="sortby">Sort by:</span>
-          <a href="javascript:void(0)" class="default cur" >Default</a>
+          <a href="javascript:void(0)" class="default cur">Default</a>
           <a href="javascript:void(0)"
              class="price"
              v-bind:class="{'sort-up':sortFlag}"
@@ -28,9 +26,11 @@
           <div class="filter stopPop" id="filter">
             <dl class="filter-price">
               <dt>Price:</dt>
-              <dd><a href="javascript:void(0)" @click="setPriceFilter('all')" v-bind:class="{'cur':priceChecked=='all'}">All</a></dd>
+              <dd><a href="javascript:void(0)" @click="setPriceFilter('all')"
+                     v-bind:class="{'cur':priceChecked=='all'}">All</a></dd>
               <dd v-for="(item,index) in priceFilter">
-                <a href="javascript:void(0)" @click="setPriceFilter(index)" v-bind:class="{'cur':priceChecked==index}">{{item.startPrice}} - {{item.endPrice}}</a>
+                <a href="javascript:void(0)" @click="setPriceFilter(index)" v-bind:class="{'cur':priceChecked==index}">{{item.startPrice}}
+                  - {{item.endPrice}}</a>
               </dd>
             </dl>
           </div>
@@ -53,7 +53,8 @@
                   </div>
                 </li>
               </ul>
-              <div v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="30" class="load-more">
+              <div v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="30"
+                   class="load-more">
                 <img src="./../assets/loading-spinning-bubbles.svg" v-show="loading">
               </div>
             </div>
@@ -103,29 +104,29 @@
         goodsList: [],
         sortFlag: true,
         page: 1,
-        pageSize:8,
+        pageSize: 8,
         sort: null,
         busy: true,
-        loading:false,
-        mdShow:false,
-        mdShowCart:false,
-        priceChecked:'all',
-        priceFilter:[
+        loading: false,
+        mdShow: false,
+        mdShowCart: false,
+        priceChecked: 'all',
+        priceFilter: [
           {
-            startPrice:'0.00',
-            endPrice:'100.00'
+            startPrice: '0.00',
+            endPrice: '100.00'
           },
           {
-            startPrice:'100.00',
-            endPrice:'500.00'
+            startPrice: '100.00',
+            endPrice: '500.00'
           },
           {
-            startPrice:'500.00',
-            endPrice:'1000.00'
+            startPrice: '500.00',
+            endPrice: '1000.00'
           },
           {
-            startPrice:'1000.00',
-            endPrice:'5000.00'
+            startPrice: '1000.00',
+            endPrice: '5000.00'
           }
         ],
       }
@@ -156,32 +157,32 @@
           page: this.page,
           pageSize: this.pageSize,
           sort: this.sortFlag ? 1 : -1,
-          priceLevel:this.priceChecked
+          priceLevel: this.priceChecked
 
         }
         this.loading = true;
         //在config/index.js中设置完之后直接使用这个，并且把之前配置的前端接口注释掉
-          axios.get("/goods/list", {
-            params: param
-          }).then((res) => {
-            res = res.data
-            this.loading = false;
-            if (res.status == '0') {
-              if(flag){
-                this.goodsList = this.goodsList.concat(res.result.list)
-                if(res.result.count==0){
-                  this.busy = true
-                }else{
-                  this.busy=false
-                }
-              }else{
-                this.goodsList = res.result.list
-                this.busy=false
+        axios.get("/goods/list", {
+          params: param
+        }).then((res) => {
+          res = res.data
+          this.loading = false;
+          if (res.status == '0') {
+            if (flag) {
+              this.goodsList = this.goodsList.concat(res.result.list)
+              if (res.result.count == 0) {
+                this.busy = true
+              } else {
+                this.busy = false
               }
             } else {
-              this.goodsList = []
+              this.goodsList = res.result.list
+              this.busy = false
             }
-          })
+          } else {
+            this.goodsList = []
+          }
+        })
       },
 
       sortGoods() {
@@ -197,30 +198,30 @@
         }, 1500);
       },
 
-      setPriceFilter(index){
+      setPriceFilter(index) {
         this.priceChecked = index;
         this.page = 1;
         this.getGoodsList();
       },
 
-      addCart(productId){
+      addCart(productId) {
         console.log(productId);
-        axios.post('/goods/addCart',{
-          productId:productId
-        }).then((res)=>{
+        axios.post('/goods/addCart', {
+          productId: productId
+        }).then((res) => {
           console.log(res);
           res = res.data
-          if(res.status==0){
+          if (res.status == 0) {
             // alert('添加成功')
             this.mdShowCart = true
-          }else{
+          } else {
             // alert('msg:'+res.msg)
             this.mdShow = true
           }
         })
       },
 
-      closeModal(){
+      closeModal() {
         this.mdShow = false
       }
 
@@ -235,7 +236,7 @@
   }
 </script>
 <style>
-  .load-more{
+  .load-more {
     width: 100%;
     text-align: center;
   }

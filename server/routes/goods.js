@@ -15,6 +15,8 @@ mongoose.connection.on('disconnected', function () {
   console.log('MongoDB connected disconnected');
 })
 
+
+//获取商品列表：localhost:3000/goods/list
 router.get('/list', (req, res, next) => {
   // Goods.create([
   //     {
@@ -185,7 +187,7 @@ router.get('/list', (req, res, next) => {
     }
   })
   
-  //加入到购物车
+  //加入到购物车：localhost:3000/goods/addCart
   router.post('/addCart', (req, res, next) => {
     var userId = '100000077', productId = req.body.productId;
     var User = require('../models/user')
