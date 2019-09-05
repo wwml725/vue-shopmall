@@ -184,7 +184,6 @@
           }
         })
       },
-
       sortGoods() {
         this.sortFlag = !this.sortFlag;
         this.page = 1;
@@ -197,13 +196,11 @@
           this.getGoodsList(true)
         }, 1500);
       },
-
       setPriceFilter(index) {
         this.priceChecked = index;
         this.page = 1;
         this.getGoodsList();
       },
-
       addCart(productId) {
         console.log(productId);
         axios.post('/goods/addCart', {
@@ -220,12 +217,9 @@
           }
         })
       },
-
       closeModal() {
         this.mdShow = false
       }
-
-
     },
     components: {
       NavHeader,

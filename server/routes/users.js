@@ -112,8 +112,28 @@ router.get('/cartList',(req,res,next)=>{
       }
     }
   })
-  
 })
+
+//删除购物车中的某一项数据
+router.post("/cartDel", function (req,res,next) {
+  var userId = req.cookies.userId,
+      productId = req.body.productId;
+  User.update({userId:userId},{$pull:{'cartList':{'productId':productId}}}, function (err,doc) {
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message,
+        result:''
+      });
+    }else{
+      res.json({
+        status:'0',
+        msg:'',
+        result:'suc'
+      });
+    }
+  });
+});
 
 
 
@@ -148,6 +168,7 @@ router.get('/cartList',(req,res,next)=>{
 //     });
 //   }
 // });
+
 // //查询当前用户的购物车数据
 // router.get("/cartList", function (req,res,next) {
 //   var userId = req.cookies.userId;
@@ -170,33 +191,8 @@ router.get('/cartList',(req,res,next)=>{
 //   });
 // });
 //
-// //购物车删除
-// router.post("/cartDel", function (req,res,next) {
-//   var userId = req.cookies.userId,productId = req.body.productId;
-//   User.update({
-//     userId:userId
-//   },{
-//     $pull:{
-//       'cartList':{
-//         'productId':productId
-//       }
-//     }
-//   }, function (err,doc) {
-//     if(err){
-//       res.json({
-//         status:'1',
-//         msg:err.message,
-//         result:''
-//       });
-//     }else{
-//       res.json({
-//         status:'0',
-//         msg:'',
-//         result:'suc'
-//       });
-//     }
-//   });
-// });
+
+
 //
 // //修改商品数量
 // router.post("/cartEdit", function (req,res,next) {
@@ -223,6 +219,7 @@ router.get('/cartList',(req,res,next)=>{
 //     }
 //   })
 // });
+
 // router.post("/editCheckAll", function (req,res,next) {
 //   var userId = req.cookies.userId,
 //     checkAll = req.body.checkAll?'1':'0';
