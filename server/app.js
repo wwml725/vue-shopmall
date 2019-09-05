@@ -23,6 +23,26 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//登录拦截
+app.use(function (req,res,next) {
+  //如果存在，代表已经登录
+  if(req.cookies.userId){
+    next()
+  }else{
+    //originalUrl:代表当前接口地址
+    console.log('path:'+req.path);
+    if(req.originalUrl=='/users/login'||req.originalUrl=='/users/logout'||req.path=='/goods/list'){
+      next()
+    }else{
+      res.json({
+        status:'10001',
+        msg:'当前未登录',
+        result:''
+      })
+    }
+  }
+})
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/goods', goods);

@@ -71,22 +71,23 @@ router.post("/logout", function (req,res,next) {
 });
 //
 
-//登录验证
-// router.get("/checkLogin", function (req,res,next) {
-//   if(req.cookies.userId){
-//     res.json({
-//       status:'0',
-//       msg:'',
-//       result:req.cookies.userName || ''
-//     });
-//   }else{
-//     res.json({
-//       status:'1',
-//       msg:'未登录',
-//       result:''
-//     });
-//   }
-// });
+//登录验证 通过id验证是否登录
+//如果cookie中保存了id，就代表登陆了，并且返回登录的用户名（这样做貌似不太好吧？？）
+router.get("/checkLogin", function (req,res,next) {
+  if(req.cookies.userId){
+    res.json({
+      status:'0',
+      msg:'',
+      result:req.cookies.userName || ''
+    });
+  }else{
+    res.json({
+      status:'1',
+      msg:'未登录',
+      result:''
+    });
+  }
+});
 
 
 // router.get("/getCartCount", function (req,res,next) {

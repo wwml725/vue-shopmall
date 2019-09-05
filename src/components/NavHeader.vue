@@ -18,8 +18,8 @@
       </div>
       <div class="navbar-right-container" style="display: flex;">
         <div class="navbar-menu-container">
-          <!--<a href="/" class="navbar-link">我的账户</a>-->
-          <span class="navbar-link" v-if="nickName"></span>
+          <!--<a href="/" class="navbar-link" v-if="nickName">{{nickName}}</a>-->
+          <span  v-if="nickName">{{nickName}}</span>
           <a href="javascript:void(0)" class="navbar-link" @click="loginModalFlag=true" v-if="!nickName">Login</a>
           <a href="javascript:void(0)" class="navbar-link" v-if="nickName" @click="logOut">Logout</a>
           <div class="navbar-cart-container">
@@ -123,6 +123,10 @@
     padding-left: 15px;
   }
 
+  .navbar-link:hover {
+    color: red;
+  }
+
   .navbar-cart-container {
     position: relative;
   }
@@ -155,8 +159,8 @@
   export default {
     data() {
       return {
-        userName:'',
-        userPwd:'',
+        userName:'王伟',
+        userPwd:'12345678',
         errorTip:false,
         errInfo:'',
         loginModalFlag:false,
@@ -164,9 +168,14 @@
 
       }
     },
+    mounted(){
+     this.checkLogin();
+    },
+
     computed: {
 
     },
+
 
     methods: {
       login(){
@@ -203,6 +212,24 @@
           }
         })
       },
+
+      //验证是否登录
+      checkLogin(){
+        axios.get("/users/checkLogin").then((response)=>{
+          var res = response.data;
+          var path = this.$route.pathname;
+          if(res.status=="0"){
+                     this.nickName = res.result;
+//             this.$store.commit("updateUserInfo",res.result);
+            this.loginModalFlag = false;
+          }else{
+            if(this.$route.path!="/goods"){
+              this.$router.push("/goods");
+            }
+          }
+        });
+      },
+
 
 
     }

@@ -15,7 +15,7 @@ mongoose.connection.on('disconnected', function () {
   console.log('MongoDB connected disconnected');
 })
 
-router.get('/', (req, res, next) => {
+router.get('/list', (req, res, next) => {
   // Goods.create([
   //     {
   //       "productId":"10001",

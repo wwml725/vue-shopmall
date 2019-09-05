@@ -137,7 +137,7 @@
         }
         this.loading = true;
         //在config/index.js中设置完之后直接使用这个，并且把之前配置的前端接口注释掉
-          axios.get("/goods", {
+          axios.get("/goods/list", {
             params: param
           }).then((res) => {
             res = res.data
