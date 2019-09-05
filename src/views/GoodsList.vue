@@ -61,6 +61,29 @@
         </div>
       </div>
     </div>
+    <!--登录验证-->
+    <modal :mdShow="mdShow" @close="closeModal">
+      <p slot="message">
+        请先登录，否则无法登录
+      </p>
+      <div slot="btnGroup">
+        <a class="btn btn--m" href="javascript:;" @click="mdShow=false">关闭</a>
+      </div>
+
+    </modal>
+    <!--加入购物车成功-->
+    <modal v-bind:mdShow="mdShowCart" v-on:close="closeModal">
+      <p slot="message">
+        <svg class="icon-status-ok">
+          <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-status-ok"></use>
+        </svg>
+        <span>加入购物车成功!</span>
+      </p>
+      <div slot="btnGroup">
+        <a class="btn btn--m" href="javascript:;" @click="mdShowCart = false">继续购物</a>
+        <router-link class="btn btn--m btn--red" href="javascript:;" to="/cart">查看购物车</router-link>
+      </div>
+    </modal>
     <nav-footer></nav-footer>
   </div>
 </template>
@@ -71,6 +94,7 @@
   import NavHeader from "components/NavHeader"
   import NavFooter from "components/NavFooter"
   import NavBread from "components/NavBread"
+  import Modal from "components/Modal"
   import axios from 'axios'
 
   export default {
@@ -83,6 +107,8 @@
         sort: null,
         busy: true,
         loading:false,
+        mdShow:false,
+        mdShowCart:false,
         priceChecked:'all',
         priceFilter:[
           {
@@ -102,8 +128,6 @@
             endPrice:'5000.00'
           }
         ],
-
-
       }
     },
 
@@ -145,7 +169,6 @@
             if (res.status == '0') {
               if(flag){
                 this.goodsList = this.goodsList.concat(res.result.list)
-
                 if(res.result.count==0){
                   this.busy = true
                 }else{
@@ -182,18 +205,23 @@
 
       addCart(productId){
         console.log(productId);
-
         axios.post('/goods/addCart',{
           productId:productId
         }).then((res)=>{
           console.log(res);
           res = res.data
           if(res.status==0){
-            alert('添加成功')
+            // alert('添加成功')
+            this.mdShowCart = true
           }else{
-            alert('msg:'+res.msg)
+            // alert('msg:'+res.msg)
+            this.mdShow = true
           }
         })
+      },
+
+      closeModal(){
+        this.mdShow = false
       }
 
 
@@ -201,7 +229,8 @@
     components: {
       NavHeader,
       NavFooter,
-      NavBread
+      NavBread,
+      Modal
     }
   }
 </script>
