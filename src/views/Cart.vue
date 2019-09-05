@@ -62,12 +62,11 @@
               <li v-for="(item,index) in cartList" :key="item.productId">
                 <div class="cart-tab-1">
                   <div class="cart-item-check">
-                    <a href="javascipt:;" class="checkbox-btn item-check-btn">
+                    <a href="javascipt:;" class="checkbox-btn item-check-btn" v-bind:class="{'check':item.checked=='1'}" @click="editCart('checked',item)">
                       <svg class="icon icon-ok">
                         <use xlink:href="#icon-ok"></use>
                       </svg>
-                    </a>
-                  </div>
+                    </a>                  </div>
                   <div class="cart-item-pic">
                     <img :src="'/static/'+item.productImage" :alt="item.productName" :title="item.productName">
                   </div>
@@ -82,9 +81,9 @@
                   <div class="item-quantity">
                     <div class="select-self select-self-open">
                       <div class="select-self-area">
-                        <a class="input-sub">-</a>
+                        <a class="input-sub" @click="editCart('minu',item)">-</a>
                         <span class="select-ipt">{{item.productNum}}</span>
-                        <a class="input-add">+</a>
+                        <a class="input-add" @click="editCart('add',item)">+</a>
                       </div>
                     </div>
                   </div>
@@ -226,7 +225,36 @@
           }
 
         })
-      }
+      },
+
+      //编辑商品数量或者选中商品
+      editCart(flag,item){
+        if(flag=='add'){
+          item.productNum++;
+        }else if(flag=='minu'){
+          if(item.productNum<=1){
+            return;
+          }
+          item.productNum--;
+        }else{
+          //'1'是选中，'0'是取消
+          item.checked = item.checked=="1"?'0':'1';
+        }
+
+        axios.post("/users/cartEdit",{
+          productId:item.productId,
+          productNum:item.productNum,
+          checked:item.checked
+        }).then((response)=>{
+          let res = response.data;
+          if(res.status=="0"){
+
+          }
+        })
+      },
+
+
+
     }
   }
 </script>

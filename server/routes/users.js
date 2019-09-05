@@ -136,6 +136,35 @@ router.post("/cartDel", function (req,res,next) {
 });
 
 
+//修改商品数量
+router.post("/cartEdit", function (req,res,next) {
+  var userId = req.cookies.userId;
+  var  productId = req.body.productId;
+  var  productNum = req.body.productNum;
+  var  checked = req.body.checked;
+  
+  User.update({"userId":userId,"cartList.productId":productId},{
+    "cartList.$.productNum":productNum,
+    "cartList.$.checked":checked,
+  }, function (err,doc) {
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message,
+        result:''
+      });
+    }else{
+      res.json({
+        status:'0',
+        msg:'',
+        result:'suc'
+      });
+    }
+  })
+});
+
+
+
 
 
 // router.get("/getCartCount", function (req,res,next) {
@@ -169,56 +198,8 @@ router.post("/cartDel", function (req,res,next) {
 //   }
 // });
 
-// //查询当前用户的购物车数据
-// router.get("/cartList", function (req,res,next) {
-//   var userId = req.cookies.userId;
-//   User.findOne({userId:userId}, function (err,doc) {
-//     if(err){
-//       res.json({
-//         status:'1',
-//         msg:err.message,
-//         result:''
-//       });
-//     }else{
-//       if(doc){
-//         res.json({
-//           status:'0',
-//           msg:'',
-//           result:doc.cartList
-//         });
-//       }
-//     }
-//   });
-// });
-//
 
 
-//
-// //修改商品数量
-// router.post("/cartEdit", function (req,res,next) {
-//   var userId = req.cookies.userId,
-//     productId = req.body.productId,
-//     productNum = req.body.productNum,
-//     checked = req.body.checked;
-//   User.update({"userId":userId,"cartList.productId":productId},{
-//     "cartList.$.productNum":productNum,
-//     "cartList.$.checked":checked,
-//   }, function (err,doc) {
-//     if(err){
-//       res.json({
-//         status:'1',
-//         msg:err.message,
-//         result:''
-//       });
-//     }else{
-//       res.json({
-//         status:'0',
-//         msg:'',
-//         result:'suc'
-//       });
-//     }
-//   })
-// });
 
 // router.post("/editCheckAll", function (req,res,next) {
 //   var userId = req.cookies.userId,
