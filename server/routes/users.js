@@ -136,7 +136,7 @@ router.post("/cartDel", function (req,res,next) {
 });
 
 
-//修改商品数量
+//修改商品数量或者选中商品
 router.post("/cartEdit", function (req,res,next) {
   var userId = req.cookies.userId;
   var  productId = req.body.productId;
@@ -164,77 +164,45 @@ router.post("/cartEdit", function (req,res,next) {
 });
 
 
+//将数据库的checked全选
+router.post("/editCheckAll", function (req,res,next) {
+  var userId = req.cookies.userId,
+    checkAll = req.body.checkAll?'1':'0';
+  User.findOne({userId:userId}, function (err,user) {
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message,
+        result:''
+      });
+    }else{
+      if(user){
+        //获取数据，遍历每一个checked，改为是否选中
+        user.cartList.forEach((item)=>{
+          item.checked = checkAll;
+        })
+        //改完之后提交数据库
+        user.save(function (err1,doc) {
+          if(err1){
+            res.json({
+              status:'1',
+              msg:err1,message,
+              result:''
+            });
+          }else{
+            res.json({
+              status:'0',
+              msg:'',
+              result:'suc'
+            });
+          }
+        })
+      }
+    }
+  });
+});
 
 
-
-// router.get("/getCartCount", function (req,res,next) {
-//   if(req.cookies && req.cookies.userId){
-//     console.log("userId:"+req.cookies.userId);
-//     var userId = req.cookies.userId;
-//     User.findOne({"userId":userId}, function (err,doc) {
-//       if(err){
-//         res.json({
-//           status:"0",
-//           msg:err.message
-//         });
-//       }else{
-//         let cartList = doc.cartList;
-//         let cartCount = 0;
-//         cartList.map(function(item){
-//           cartCount += parseFloat(item.productNum);
-//         });
-//         res.json({
-//           status:"0",
-//           msg:"",
-//           result:cartCount
-//         });
-//       }
-//     });
-//   }else{
-//     res.json({
-//       status:"0",
-//       msg:"当前用户不存在"
-//     });
-//   }
-// });
-
-
-
-
-// router.post("/editCheckAll", function (req,res,next) {
-//   var userId = req.cookies.userId,
-//     checkAll = req.body.checkAll?'1':'0';
-//   User.findOne({userId:userId}, function (err,user) {
-//     if(err){
-//       res.json({
-//         status:'1',
-//         msg:err.message,
-//         result:''
-//       });
-//     }else{
-//       if(user){
-//         user.cartList.forEach((item)=>{
-//           item.checked = checkAll;
-//         })
-//         user.save(function (err1,doc) {
-//           if(err1){
-//             res.json({
-//               status:'1',
-//               msg:err1,message,
-//               result:''
-//             });
-//           }else{
-//             res.json({
-//               status:'0',
-//               msg:'',
-//               result:'suc'
-//             });
-//           }
-//         })
-//       }
-//     }
-//   });
-// });
 // //查询用户地址接口
 // router.get("/addressList", function (req,res,next) {
 //   var userId = req.cookies.userId;
@@ -395,6 +363,7 @@ router.post("/cartEdit", function (req,res,next) {
 //     }
 //   })
 // });
+//
 // //根据订单Id查询订单信息
 // router.get("/orderDetail", function (req,res,next) {
 //   var userId = req.cookies.userId,orderId = req.param("orderId");
@@ -440,4 +409,43 @@ router.post("/cartEdit", function (req,res,next) {
 //     }
 //   })
 // });
+
+
+
+
+
+// router.get("/getCartCount", function (req,res,next) {
+//   if(req.cookies && req.cookies.userId){
+//     console.log("userId:"+req.cookies.userId);
+//     var userId = req.cookies.userId;
+//     User.findOne({"userId":userId}, function (err,doc) {
+//       if(err){
+//         res.json({
+//           status:"0",
+//           msg:err.message
+//         });
+//       }else{
+//         let cartList = doc.cartList;
+//         let cartCount = 0;
+//         cartList.map(function(item){
+//           cartCount += parseFloat(item.productNum);
+//         });
+//         res.json({
+//           status:"0",
+//           msg:"",
+//           result:cartCount
+//         });
+//       }
+//     });
+//   }else{
+//     res.json({
+//       status:"0",
+//       msg:"当前用户不存在"
+//     });
+//   }
+// });
+
+
+
+
 module.exports = router;

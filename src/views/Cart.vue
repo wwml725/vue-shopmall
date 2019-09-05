@@ -108,17 +108,17 @@
           <div class="cart-foot-inner">
             <div class="cart-foot-l">
               <div class="item-all-check">
-                <a href="javascipt:;">
-                  <span class="checkbox-btn item-check-btn">
+                <a href="javascipt:;" @click="toggleCheckAll">
+                  <span class="checkbox-btn item-check-btn" v-bind:class="{'check':checkAllFlag}">
                       <svg class="icon icon-ok"><use xlink:href="#icon-ok"/></svg>
                   </span>
-                  <span>Select all</span>
+                  <span >Select all</span>
                 </a>
               </div>
             </div>
             <div class="cart-foot-r">
               <div class="item-total">
-                Item total: <span class="total-price">500</span>
+                Item total: <span class="total-price">{{totalPrice|currency('$')}}</span>
               </div>
               <div class="btn-wrap">
                 <a class="btn btn--red">Checkout</a>
@@ -177,6 +177,8 @@
   import NavFooter from "components/NavFooter"
   import NavBread from "components/NavBread"
   import Modal from "components/Modal"
+  import {currency} from './../util/currency'
+
   import axios from 'axios'
 
   export default {
@@ -189,13 +191,39 @@
     data() {
       return {
         msg: 'hello word',
-        cartList:'',
+        cartList:[],
         modalConfirmShow:false,
         productId:''
       }
     },
     mounted(){
       this.init()
+    },
+    filters:{
+      currency:currency
+    },
+    computed:{
+      checkAllFlag(){
+        return this.checkedCount == this.cartList.length;
+      },
+      checkedCount(){
+        var i = 0;
+        this.cartList.forEach((item)=>{
+          if(item.checked=='1')i++;
+        })
+        return i;
+      },
+      totalPrice(){
+        var money = 0;
+        this.cartList.forEach((item)=>{
+          if(item.checked=='1'){
+            money += parseFloat(item.salePrice)*parseInt(item.productNum);
+          }
+        })
+        return money;
+      }
+
+
     },
     methods:{
       init(){
@@ -252,6 +280,22 @@
           }
         })
       },
+
+      toggleCheckAll(){
+        var flag = !this.checkAllFlag;
+        this.cartList.forEach((item)=>{
+          item.checked = flag?'1':'0';
+        })
+        axios.post("/users/editCheckAll",{
+          checkAll:flag
+        }).then((response)=>{
+          let res = response.data;
+          if(res.status=='0'){
+            console.log("update suc");
+          }
+        })
+      },
+
 
 
 
