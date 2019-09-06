@@ -89,7 +89,7 @@
                   </div>
                 </div>
                 <div class="cart-tab-4">
-                  <div class="item-price-total">{{item.productNum*item.salePrice}}</div>
+                  <div class="item-price-total">￥{{item.productNum*item.salePrice}}</div>
                 </div>
                 <div class="cart-tab-5">
                   <div class="cart-item-opration" @click="delCartConfirm(item.productId)">
@@ -118,16 +118,18 @@
             </div>
             <div class="cart-foot-r">
               <div class="item-total">
-                Item total: <span class="total-price">{{totalPrice|currency('$')}}</span>
+                Item total: <span class="total-price">{{totalPrice|currency('￥')}}</span>
               </div>
               <div class="btn-wrap">
-                <a class="btn btn--red">Checkout</a>
+                <a class="btn btn--red" v-bind:class="{'btn--dis':checkedCount==0}" @click="Checkout">Checkout</a>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+
     <modal v-bind:mdShow="modalConfirmShow" v-on:close="closeModal">
       <p slot="message">
         <span>你你确定要删除这项数据吗？</span>
@@ -203,10 +205,17 @@
       currency:currency
     },
     computed:{
+      //之前全选的思路是：
+      //1、遍历每一个商品，如果每一个商品的checked都是true，那么就是全选
+      //现在的思路是：
+      //选中一个商品将当前商品的checked='1',count=1,选几个count就是是几，当count数量等于商品数量的时候就是全选
+
       checkAllFlag(){
+        //如果选中的数量和商品数量相等，就是全选
         return this.checkedCount == this.cartList.length;
       },
       checkedCount(){
+        //遍历每一个商品，检查有几个checked是'1'
         var i = 0;
         this.cartList.forEach((item)=>{
           if(item.checked=='1')i++;
@@ -235,13 +244,10 @@
       closeModal(){
         this.modalConfirmShow=false
       },
-
       delCartConfirm(productId){
         this.productId = productId
         this.modalConfirmShow=true
       },
-
-
       delCart(){
         axios.post('/users/cartDel',{
           productId:this.productId
@@ -254,7 +260,6 @@
 
         })
       },
-
       //编辑商品数量或者选中商品
       editCart(flag,item){
         if(flag=='add'){
@@ -280,7 +285,6 @@
           }
         })
       },
-
       toggleCheckAll(){
         var flag = !this.checkAllFlag;
         this.cartList.forEach((item)=>{
@@ -295,6 +299,14 @@
           }
         })
       },
+
+      Checkout(){
+        if(this.checkedCount>0){
+          this.$router.push({
+            path:'/address'
+          })
+        }
+      }
 
 
 

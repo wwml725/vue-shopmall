@@ -13,7 +13,16 @@ let userSchema = new mongoose.Schema({
     'productNum': Number,
   }
   ],
-  'addressList':Array
+  'addressList':[
+    {
+      'addressId': String,
+      'userName': String,
+      'streetName':String,
+      'postCode':String,
+      'tel': String,
+      'isDefault': Boolean
+    },
+  ]
   
 });
 module.exports = mongoose.model('User', userSchema)
