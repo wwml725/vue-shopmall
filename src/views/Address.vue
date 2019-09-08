@@ -92,7 +92,7 @@
                   </div>
                   <div class="addr-opration addr-default" v-if="item.isDefault">Default address</div>
                 </li>
-                <li class="addr-new">
+                <li class="addr-new" @click="newAddressShow=true">
                   <div class="add-new-inner">
                     <i class="icon-add">
                       <svg class="icon icon-add">
@@ -150,10 +150,99 @@
         <a class="btn btn--m btn--red" href="javascript:;" @click="isMdShow=false">取消</a>
       </div>
     </modal>
+    <!--添加地址-->
+    <div class="addNewAddress" v-if="newAddressShow">
+      <div class="address-wrapper">
+        <div class="addressInfo">
+          <div class="itemInfo username">
+            <label for="addressName">姓名</label>
+            <input type="text" id="addressName" v-model="addressName">
+          </div>
+          <div class="itemInfo address">
+            <label for="address">地址</label>
+            <textarea type="text" id="address" v-model="address"></textarea>
+          </div>
+          <div class="itemInfo tel">
+            <label for="tel">电话</label>
+            <input type="text" id="tel" v-model="tel">
+          </div>
+          <div class="itemInfo postCode">
+            <label for="postCode">邮编</label>
+            <input type="text" id="postCode" v-model="postCode">
+          </div>
+          <p style="margin-top: 10px;color: red">
+            <span>是否设置为默认地址</span>   <input type="checkbox" v-model="isDefault">
+          </p>
+        </div>
+        <div class="confirm-wrapper">
+          <button class="cancel-btn" @click="newAddressShow=false">取消</button>
+          <button class="confirm-btn" @click="addNewAddress">确认</button>
+        </div>
+      </div>
+    </div>
     <nav-footer></nav-footer>
   </div>
 </template>
 <style>
+  .addNewAddress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(204, 204, 204, 0.49);
+  }
+
+  .address-wrapper {
+    width: 50%;
+    height: 80%;
+    border: 1px solid red;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 50;
+    transform: translate3d(-50%, -50%, 0);
+    background: white;
+
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+
+
+  }
+  .addressInfo{
+    flex: 8;
+    /*align-items: center;*/
+    text-align: center;
+  }
+
+  .addressInfo .itemInfo{
+    margin-top: 10px;
+    /*display: flex;*/
+  }
+  .confirm-wrapper{
+    flex: 2;
+    text-align: center;
+
+  }
+  .confirm-wrapper .cancel-btn{
+    margin-right:50px ;
+    border: 1px solid red;
+    width: 80px;
+    height: 40px;
+  }
+  .confirm-wrapper .confirm-btn{
+    /*margin-right:50px ;*/
+    border: 1px solid red;
+    width: 80px;
+    height: 40px;
+  }
+  .cancel-btn:hover,.confirm-btn:hover{
+    background: red;
+    color: white;
+  }
 </style>
 <script>
   import NavHeader from './../components/NavHeader'
@@ -172,7 +261,13 @@
         addressList: [],
         isMdShow: false,
         addressId: '',
-        addAddressShow: false
+        isDefault:false,
+        newAddressShow: false,
+        addressName:'王伟',
+        tel:'123',
+        address:'456',
+        postCode:'789'
+
       }
     },
     mounted() {
@@ -236,6 +331,23 @@
           }
         })
       },
+
+      addNewAddress(){
+
+        axios.post("/users/setNewAddress",{
+          addressName:this.addressName,
+          tel:this.tel,
+          address:this.address,
+          postCode:this.postCode,
+          isDefault:this.isDefault,
+        }).then((res)=>{
+          console.log(res);
+          this.newAddressShow=false
+          this.init()
+        })
+
+
+      }
 
     }
   }

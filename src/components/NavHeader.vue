@@ -173,7 +173,7 @@
     },
     mounted() {
       this.checkLogin();
-      this.getCartCount()
+      // this.getCartCount()
       console.log('mounted');
     },
 
