@@ -420,37 +420,38 @@ router.get("/orderDetail", function (req,res,next) {
 
 
 
-
-// router.get("/getCartCount", function (req,res,next) {
-//   if(req.cookies && req.cookies.userId){
-//     console.log("userId:"+req.cookies.userId);
-//     var userId = req.cookies.userId;
-//     User.findOne({"userId":userId}, function (err,doc) {
-//       if(err){
-//         res.json({
-//           status:"0",
-//           msg:err.message
-//         });
-//       }else{
-//         let cartList = doc.cartList;
-//         let cartCount = 0;
-//         cartList.map(function(item){
-//           cartCount += parseFloat(item.productNum);
-//         });
-//         res.json({
-//           status:"0",
-//           msg:"",
-//           result:cartCount
-//         });
-//       }
-//     });
-//   }else{
-//     res.json({
-//       status:"0",
-//       msg:"当前用户不存在"
-//     });
-//   }
-// });
+//获得购物车商品的总数量
+//当然这个也可以在前端获取到（就是：通过获取购物车商品列表，经过计算得出总数量）
+router.get("/getCartCount", function (req,res,next) {
+  if(req.cookies && req.cookies.userId){
+    console.log("userId:"+req.cookies.userId);
+    var userId = req.cookies.userId;
+    User.findOne({"userId":userId}, function (err,doc) {
+      if(err){
+        res.json({
+          status:"0",
+          msg:err.message
+        });
+      }else{
+        let cartList = doc.cartList;
+        let cartCount = 0;
+        cartList.map(function(item){
+          cartCount += parseFloat(item.productNum);
+        });
+        res.json({
+          status:"0",
+          msg:"",
+          result:cartCount
+        });
+      }
+    });
+  }else{
+    res.json({
+      status:"0",
+      msg:"当前用户不存在"
+    });
+  }
+});
 
 
 

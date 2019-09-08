@@ -19,12 +19,12 @@
       <div class="navbar-right-container" style="display: flex;">
         <div class="navbar-menu-container">
           <!--<a href="/" class="navbar-link" v-if="nickName">{{nickName}}</a>-->
-          <span  v-if="nickName">{{nickName}}</span>
+          <span v-if="nickName">{{nickName}}</span>
           <a href="javascript:void(0)" class="navbar-link" @click="loginModalFlag=true" v-if="!nickName">Login</a>
           <a href="javascript:void(0)" class="navbar-link" v-if="nickName" @click="logOut">Logout</a>
           <div class="navbar-cart-container">
-            <span class="navbar-cart-count"></span>
-            <a class="navbar-link navbar-cart-link" href="/#/cart">
+            <span class="navbar-cart-count" v-text="cartCount" v-if="cartCount"></span>
+            <a class="navbar-link navbar-cart-link" @click="jump('/cart')">
               <svg class="navbar-cart-logo">
                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-cart"></use>
               </svg>
@@ -48,16 +48,18 @@
             <ul>
               <li class="regi_form_input">
                 <i class="icon IconPeople"></i>
-                <input type="text" tabindex="1" name="loginname" v-model="userName" class="regi_login_input regi_login_input_left" placeholder="User Name" data-type="loginname">
+                <input type="text" tabindex="1" name="loginname" v-model="userName"
+                       class="regi_login_input regi_login_input_left" placeholder="User Name" data-type="loginname">
               </li>
               <li class="regi_form_input noMargin">
                 <i class="icon IconPwd"></i>
-                <input type="password" tabindex="2"  name="password" v-model="userPwd" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Password" >
+                <input type="password" tabindex="2" name="password" v-model="userPwd"
+                       class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Password">
               </li>
             </ul>
           </div>
           <div class="login-wrap" @click="login">
-            <a href="javascript:;" class="btn-login" >登  录</a>
+            <a href="javascript:;" class="btn-login">登 录</a>
           </div>
         </div>
       </div>
@@ -155,82 +157,102 @@
 <script>
   import './../assets/css/login.css'
   import axios from 'axios'
+  import {mapState} from 'vuex'
 
   export default {
     data() {
       return {
-        userName:'王伟',
-        userPwd:'12345678',
-        errorTip:false,
-        errInfo:'',
-        loginModalFlag:false,
-        nickName:''
+        userName: '王伟',
+        userPwd: '12345678',
+        errorTip: false,
+        errInfo: '',
+        loginModalFlag: false,
+        // nickName:''
 
       }
     },
-    mounted(){
-     this.checkLogin();
+    mounted() {
+      this.checkLogin();
+      this.getCartCount()
+      console.log('mounted');
     },
 
     computed: {
-
+      ...mapState(['nickName', 'cartCount'])
     },
 
 
     methods: {
-      login(){
-        console.log(11);
-        //如果不填数据，就不会调用接口，只有填了之后才会调取接口，调取接口之后，将数据传送给后台，后台需要进行验证，根据不同的要求返回不同的内容（后端设置），提问：如果用户名先写正确，密码输入错误，如何返回密码错误或者密码和用户不匹配。
-        //后台可以先验证用户是否存在，如果存在在验证用户和密码（感觉多谢了好多代码）(T＿T)(T＿T)
-        if(!this.userName || !this.userPwd){
-          this.errorTip = true;
-          return;
-        }
-        axios.post('users/login',{
-          userName:this.userName,
-          userPwd:this.userPwd
-        }).then((response)=>{
-          let res = response.data;
-          if(res.status==='0'){
-            this.errorTip=false
-            this.loginModalFlag = false;
-            this.nickName = res.result.userName
-            console.log(res.result.userName);
-          }else{
-            this.errorTip = true
-            this.errInfo = res.msg
-          }
-        })
-      },
-
-      logOut(){
-        axios.post("/users/logout").then((response)=>{
-          let res = response.data;
-          if(res.status=="0"){
-                       this.nickName = '';
-//             this.$store.commit("updateUserInfo",res.result.userName);
-          }
-        })
-      },
-
       //验证是否登录
-      checkLogin(){
-        axios.get("/users/checkLogin").then((response)=>{
+      checkLogin() {
+        console.log('checkLogin');
+        axios.get("/users/checkLogin").then((response) => {
           var res = response.data;
           var path = this.$route.pathname;
-          if(res.status=="0"){
-                     this.nickName = res.result;
-//             this.$store.commit("updateUserInfo",res.result);
+          if (res.status == "0") {
+            // this.nickName = res.result;
+            //只能通过commit方式改变vuex中的数据
+            this.$store.commit("updateUserInfo",res.result);
             this.loginModalFlag = false;
-          }else{
-            if(this.$route.path!="/goods"){
+            // this.getCartCount();//写在这里会有bug
+
+          } else {
+            if (this.$route.path != "/goods") {
               this.$router.push("/goods");
             }
           }
         });
       },
+      jump(target){
+        this.$router.push(target)
+      },
+      login() {
+        console.log(11);
+        //如果不填数据，就不会调用接口，只有填了之后才会调取接口，调取接口之后，将数据传送给后台，后台需要进行验证，根据不同的要求返回不同的内容（后端设置），提问：如果用户名先写正确，密码输入错误，如何返回密码错误或者密码和用户不匹配。
+        //后台可以先验证用户是否存在，如果存在在验证用户和密码（感觉多谢了好多代码）(T＿T)(T＿T)
+        if (!this.userName || !this.userPwd) {
+          this.errorTip = true;
+          return;
+        }
+        axios.post('users/login', {
+          userName: this.userName,
+          userPwd: this.userPwd
+        }).then((response) => {
+          let res = response.data;
+          if (res.status === '0') {
+            this.errorTip = false
+            this.loginModalFlag = false;
+            // this.nickName = res.result.userName
+            //只能通过commit方式改变vuex中的数据
+            this.$store.commit("updateUserInfo", res.result.userName);
+            this.getCartCount();
+            console.log(res.result.userName);
+          } else {
+            this.errorTip = true
+            this.errInfo = res.msg
+          }
+        })
+      },
+      logOut() {
+        axios.post("/users/logout").then((response) => {
+          let res = response.data;
+          if (res.status == "0") {
+            // this.nickName = '';
+            this.$store.commit("updateUserInfo",res.result.userName);
+            this.$store.commit("updateCartCount","");
 
-
+          }
+        })
+      },
+      //获取商品数量
+/*
+      getCartCount(){
+        axios.get("users/getCartCount").then(res=>{
+          var res = res.data;
+          this.$store.commit("updateCartCount",res.result);
+        });
+      }
+*/
 
     }
   }

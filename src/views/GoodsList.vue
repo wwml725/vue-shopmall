@@ -134,6 +134,7 @@
 
     mounted() {
       this.getGoodsList()
+      this.getCartCount()
     },
 
     methods: {
@@ -211,6 +212,8 @@
           if (res.status == 0) {
             // alert('添加成功')
             this.mdShowCart = true
+            this.$store.commit("updateCartCount",1);
+
           } else {
             // alert('msg:'+res.msg)
             this.mdShow = true
@@ -219,7 +222,14 @@
       },
       closeModal() {
         this.mdShow = false
+      },
+      getCartCount(){
+        axios.get("users/getCartCount").then(res=>{
+          var res = res.data;
+          this.$store.commit("updateCartCount",res.result);
+        });
       }
+
     },
     components: {
       NavHeader,
