@@ -134,7 +134,7 @@
 
     mounted() {
       this.getGoodsList()
-      this.getCartCount()
+      // this.getCartCount()
     },
 
     methods: {

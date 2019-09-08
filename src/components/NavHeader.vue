@@ -194,7 +194,7 @@
             //只能通过commit方式改变vuex中的数据
             this.$store.commit("updateUserInfo",res.result);
             this.loginModalFlag = false;
-            // this.getCartCount();//写在这里会有bug
+            this.getCartCount();
 
           } else {
             if (this.$route.path != "/goods") {
@@ -245,14 +245,12 @@
         })
       },
       //获取商品数量
-/*
       getCartCount(){
         axios.get("users/getCartCount").then(res=>{
           var res = res.data;
-          this.$store.commit("updateCartCount",res.result);
+          this.$store.commit("initCartCount",res.result);
         });
       }
-*/
 
     }
   }

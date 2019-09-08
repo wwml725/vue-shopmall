@@ -92,7 +92,7 @@
                   <div class="item-price-total">￥{{item.productNum*item.salePrice}}</div>
                 </div>
                 <div class="cart-tab-5">
-                  <div class="cart-item-opration" @click="delCartConfirm(item.productId)">
+                  <div class="cart-item-opration" @click="delCartConfirm(item)">
                     <a href="javascript:;" class="item-edit-btn">
                       <svg class="icon icon-del">
                         <use xlink:href="#icon-del"></use>
@@ -195,7 +195,8 @@
         msg: 'hello word',
         cartList:[],
         modalConfirmShow:false,
-        productId:''
+        productId:'',
+        delItem:{},
       }
     },
     mounted(){
@@ -244,18 +245,22 @@
       closeModal(){
         this.modalConfirmShow=false
       },
-      delCartConfirm(productId){
-        this.productId = productId
+      delCartConfirm(item){
+        this.delItem = item
         this.modalConfirmShow=true
       },
       delCart(){
         axios.post('/users/cartDel',{
-          productId:this.productId
+          productId:this.delItem.productId
         }).then((response)=>{
           let res = response.data;
           if(res.status=='0'){
             this.modalConfirmShow=false;
+            var delCount = this.delItem.productNum;
+            this.$store.commit("updateCartCount",-delCount);
             this.init()
+            // this.$router.go(0)//刷新页面对用户体验影响太大，不到万不得已不要使用
+
           }
 
         })
@@ -272,6 +277,7 @@
         }else{
           //'1'是选中，'0'是取消
           item.checked = item.checked=="1"?'0':'1';
+          return
         }
 
         axios.post("/users/cartEdit",{
@@ -279,6 +285,7 @@
           productNum:item.productNum,
           checked:item.checked
         }).then((response)=>{
+          console.log(111);
           let res = response.data;
           if(res.status=="0"){
             this.$store.commit("updateCartCount",flag=="add"?1:-1);
