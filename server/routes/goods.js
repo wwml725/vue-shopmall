@@ -208,6 +208,7 @@ router.get('/list', (req, res, next) => {
               item.productNum++
               console.log(item.productNum);}
           })
+          //如果购物车里有了，只改变数量
           if(goodsItem){
             userDoc.save((err2,doc2)=>{
               if(err2){
@@ -227,6 +228,7 @@ router.get('/list', (req, res, next) => {
             })
   
           }else{
+            //如果没有那就通过id在goodList中找到商品，保存到用户购物车中
             Goods.findOne({productId: productId}, (err, doc) => {
               if (err) {
                 res.json({

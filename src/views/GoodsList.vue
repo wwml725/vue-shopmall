@@ -159,7 +159,6 @@
           pageSize: this.pageSize,
           sort: this.sortFlag ? 1 : -1,
           priceLevel: this.priceChecked
-
         }
         this.loading = true;
         //在config/index.js中设置完之后直接使用这个，并且把之前配置的前端接口注释掉
@@ -185,6 +184,7 @@
           }
         })
       },
+
       sortGoods() {
         this.sortFlag = !this.sortFlag;
         this.page = 1;
@@ -213,7 +213,6 @@
             // alert('添加成功')
             this.mdShowCart = true
             this.$store.commit("updateCartCount",1);
-
           } else {
             // alert('msg:'+res.msg)
             this.mdShow = true
