@@ -27,10 +27,9 @@ router.post("/login", function (req, res, next) {
         status: "1",
         msg: err.message,
       });
-      
-      console.log(err);
+      // console.log(err);
     } else {
-      console.log(doc);//如果没有找到就是null
+      // console.log(doc);//如果没有找到就是null
       if (doc) {
         res.cookie("userId", doc.userId, {
           path: '/',
@@ -57,22 +56,6 @@ router.post("/login", function (req, res, next) {
   });
 });
 
-
-//登出接口   就是清除cookie记录
-//localhost:3000/users/logout
-router.post("/logout", function (req, res, next) {
-  res.cookie("userId", "", {
-    path: "/",
-    maxAge: -1
-  });
-  res.json({
-    status: "0",
-    msg: '',
-    result: ''
-  })
-});
-
-
 //登录验证 通过id验证是否登录
 //如果cookie中保存了id，就代表登陆了，并且返回登录的用户名（这样做貌似不太好吧？？）
 //页面中登录和不登录显示的内容是不一样的
@@ -91,6 +74,60 @@ router.get("/checkLogin", function (req, res, next) {
     });
   }
 });
+
+//注册功能(注册需要填入用户名和密码)
+router.post('/reg',(req,res,next)=> {
+  var param = {
+    userName:req.body.userName,
+  }
+  User.findOne(param,function (err,doc) {
+    if(err){
+      res.json({
+        status: "1",
+        msg: err.message,
+      });
+    }else{
+      if(doc){
+        res.json({
+          status: '0',
+          msg: '',
+          result: {
+            userName: doc.userName
+          }
+        });
+      }else{
+      
+      
+      }
+  
+    }
+  })
+ 
+
+});
+
+//注册验证：
+router.get('/checkReg',(req,res,next)=>{
+
+})
+
+
+//登出接口   就是清除cookie记录
+//localhost:3000/users/logout
+router.post("/logout", function (req, res, next) {
+  res.cookie("userId", "", {
+    path: "/",
+    maxAge: -1
+  });
+  res.json({
+    status: "0",
+    msg: '',
+    result: ''
+  })
+});
+
+
+
 
 //获取购物车列表数据
 router.get('/cartList', (req, res, next) => {

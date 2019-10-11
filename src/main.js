@@ -26,6 +26,7 @@ const store = new Vuex.Store({
   },
   mutations:{//专门用来改变状态的
     updateUserInfo(state,nickName){
+      //为什么这里不用return出来，而之前的vuex基础中counter计数器需要return出来
       state.nickName = nickName
     },
     updateCartCount(state,cartCount){
